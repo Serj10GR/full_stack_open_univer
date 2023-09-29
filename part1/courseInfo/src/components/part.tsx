@@ -1,12 +1,12 @@
-type PartProps = {
+export type Part = {
   name: string;
-  nr: number;
+  exercises: number;
 };
 
-export const Part = ({ name, nr }: PartProps) => {
+export const Part = ({ name, exercises }: Part) => {
   return (
     <p>
-      {name} {nr}
+      {name} {exercises}
     </p>
   );
 };

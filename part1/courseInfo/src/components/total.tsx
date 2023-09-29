@@ -1,7 +1,18 @@
+import { Part } from "./part";
+
 type TotalProps = {
-  total: number;
+  parts: Array<Part>;
 };
 
-export const Total = ({ total }: TotalProps) => {
-  return <p>Number of exercises {total}</p>;
+export const Total = ({ parts }: TotalProps) => {
+  const calcTotal = (parts: Array<Part>) => {
+    let total = 0;
+
+    parts.forEach((part) => {
+      total = part.exercises + total;
+    });
+
+    return total;
+  };
+  return <p>Number of exercises {calcTotal(parts)}</p>;
 };
