@@ -16,6 +16,8 @@ const App = () => {
     bad: 0,
   });
 
+  const totalFeedbaks = stats.good + stats.bad + stats.neutral;
+
   // take all possible stats from the object
   const feedbacks = Object.keys(stats);
 
@@ -25,6 +27,14 @@ const App = () => {
       [val]: prevStats[val] + 1,
     }));
   };
+
+  const calcAverage = () => {
+    // good 1, neutral 0 positive -1
+    const totalScore = stats.good * 1 + stats.bad * -1;
+    return totalScore / totalFeedbaks;
+  };
+
+  const goodPercentage = (stats.good / totalFeedbaks) * 100;
 
   return (
     <div>
@@ -42,6 +52,9 @@ const App = () => {
       <p>good: {stats.good}</p>
       <p>neutral: {stats.neutral}</p>
       <p>bad: {stats.bad}</p>
+      <p>all: {totalFeedbaks}</p>
+      <p>average: {calcAverage()}</p>
+      <p>positive: {goodPercentage}%</p>
     </div>
   );
 };
