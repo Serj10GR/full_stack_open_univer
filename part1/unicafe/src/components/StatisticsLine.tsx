@@ -10,9 +10,12 @@ export const StatisticsLine = ({
   valueSign,
 }: StatisticLineProps) => {
   return (
-    <p>
-      {text}: {value}
-      {valueSign ? valueSign : null}
-    </p>
+    <tr>
+      <td>{text}:</td>
+      <td>
+        {value}
+        {valueSign ? valueSign : null}
+      </td>
+    </tr>
   );
 };

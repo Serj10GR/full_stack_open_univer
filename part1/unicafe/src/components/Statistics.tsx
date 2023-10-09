@@ -30,18 +30,20 @@ export const Statiscs = ({
     <div>
       <h2>Statistics</h2>
       {hasStats ? (
-        <>
-          <StatisticsLine text="good" value={good} />
-          <StatisticsLine text="neutral" value={neutral} />
-          <StatisticsLine text="bad" value={bad} />
-          <StatisticsLine text="all" value={totalFeedbaks} />
-          <StatisticsLine text="average" value={average} />
-          <StatisticsLine
-            text="positive"
-            value={goodPercentage}
-            valueSign="%"
-          />
-        </>
+        <table>
+          <tbody>
+            <StatisticsLine text="good" value={good} />
+            <StatisticsLine text="neutral" value={neutral} />
+            <StatisticsLine text="bad" value={bad} />
+            <StatisticsLine text="all" value={totalFeedbaks} />
+            <StatisticsLine text="average" value={average} />
+            <StatisticsLine
+              text="positive"
+              value={goodPercentage}
+              valueSign="%"
+            />
+          </tbody>
+        </table>
       ) : (
         <p>No feedback given</p>
       )}
