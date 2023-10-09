@@ -1,3 +1,5 @@
+import { StatisticsLine } from "./StatisticsLine";
+
 export interface Stats {
   good: number;
   neutral: number;
@@ -29,12 +31,16 @@ export const Statiscs = ({
       <h2>Statistics</h2>
       {hasStats ? (
         <>
-          <p>good: {good}</p>
-          <p>neutral: {neutral}</p>
-          <p>bad: {bad}</p>
-          <p>all: {totalFeedbaks}</p>
-          <p>average: {average}</p>
-          <p>positive: {goodPercentage}%</p>
+          <StatisticsLine text="good" value={good} />
+          <StatisticsLine text="neutral" value={neutral} />
+          <StatisticsLine text="bad" value={bad} />
+          <StatisticsLine text="all" value={totalFeedbaks} />
+          <StatisticsLine text="average" value={average} />
+          <StatisticsLine
+            text="positive"
+            value={goodPercentage}
+            valueSign="%"
+          />
         </>
       ) : (
         <p>No feedback given</p>
