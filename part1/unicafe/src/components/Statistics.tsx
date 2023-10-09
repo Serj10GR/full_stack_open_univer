@@ -16,21 +16,29 @@ export const Statiscs = ({
   const calcAverage = () => {
     // good 1, neutral 0 positive -1
     const totalScore = good * 1 + bad * -1;
-    return totalFeedbaks > 0 ? totalScore / totalFeedbaks : 0;
+    return totalScore / totalFeedbaks;
   };
 
-  const goodPercentage = totalFeedbaks > 0 ? (good / totalFeedbaks) * 100 : 0;
+  const goodPercentage = (good / totalFeedbaks) * 100;
 
   const average = calcAverage();
+
+  const hasStats = good || neutral || bad;
   return (
     <div>
       <h2>Statistics</h2>
-      <p>good: {good}</p>
-      <p>neutral: {neutral}</p>
-      <p>bad: {bad}</p>
-      <p>all: {totalFeedbaks}</p>
-      <p>average: {average}</p>
-      <p>positive: {goodPercentage}%</p>
+      {hasStats ? (
+        <>
+          <p>good: {good}</p>
+          <p>neutral: {neutral}</p>
+          <p>bad: {bad}</p>
+          <p>all: {totalFeedbaks}</p>
+          <p>average: {average}</p>
+          <p>positive: {goodPercentage}%</p>
+        </>
+      ) : (
+        <p>No feedback given</p>
+      )}
     </div>
   );
 };
