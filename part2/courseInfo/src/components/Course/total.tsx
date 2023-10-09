@@ -9,5 +9,7 @@ export const Total = ({ parts }: TotalProps) => {
     return parts.reduce((total, part) => total + part.exercises, 0);
   };
 
-  return <p>Number of exercises {calcTotal(parts)}</p>;
+  return (
+    <p style={{ fontWeight: "700" }}>Number of exercises {calcTotal(parts)}</p>
+  );
 };
