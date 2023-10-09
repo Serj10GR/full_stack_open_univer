@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Button } from "./components/Button";
+import { Anectode } from "./components/Anecdote";
 
 const App = () => {
   const anecdotes = [
@@ -13,6 +15,7 @@ const App = () => {
   ];
 
   const [selected, setSelected] = useState(0);
+  const [points, setPoints] = useState(Array(anecdotes.length).fill(0));
 
   const handleClick = () => {
     // generate random anectode from the array
@@ -20,12 +23,17 @@ const App = () => {
     setSelected(randomIndex);
   };
 
+  const handleVoteClick = () => {
+    const newPoints = [...points];
+    newPoints[selected] = newPoints[selected] + 1;
+    setPoints(newPoints);
+  };
+
   return (
     <div>
-      <div>{anecdotes[selected]}</div>
-      <button onClick={handleClick} type="button">
-        Generate next anectode
-      </button>
+      <Anectode text={anecdotes[selected]} votes={points[selected]} />
+      <Button onClick={handleVoteClick} type="button" text="Vote" />
+      <Button onClick={handleClick} type="button" text="next anectode" />
     </div>
   );
 };
