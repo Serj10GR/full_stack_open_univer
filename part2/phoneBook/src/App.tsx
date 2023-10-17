@@ -1,18 +1,28 @@
 import { FormEvent, useState } from "react";
-import { Input } from "./components/Input";
 import { Person } from "./types/person";
+import { Filter } from "./components/Filter";
+import PersonForm from "./components/PersonForm";
+import { Persons } from "./components/Persons";
 
 const App = () => {
   const [persons, setPersons] = useState<Array<Person>>([
-    { name: "Arto Hellas", phone: "+123-3455-333" },
+    { name: "Arto Hellas", phone: "040-123456", id: 1 },
+    { name: "Ada Lovelace", phone: "39-44-5323523", id: 2 },
+    { name: "Dan Abramov", phone: "12-43-234345", id: 3 },
+    { name: "Mary Poppendieck", phone: "39-23-6423122", id: 4 },
   ]);
+  const [query, setQuery] = useState("");
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
 
   const addPerson = (event: FormEvent) => {
     event.preventDefault();
 
-    const newPerson: Person = { name: newName, phone: newPhone };
+    const newPerson: Person = {
+      name: newName,
+      phone: newPhone,
+      id: persons.length + 1,
+    };
 
     const savedNames = persons.map((person) => person.name);
 
@@ -29,25 +39,16 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addPerson}>
-        <Input
-          required
-          label="name"
-          onChange={(e) => setNewName(e.target.value)}
-        />
-        <Input
-          required
-          label="phone"
-          onChange={(e) => setNewPhone(e.target.value)}
-        />
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Filter onQueryChange={setQuery} />
+
+      <h2>Add new person</h2>
+      <PersonForm
+        onNameChange={setNewName}
+        onPhoneChange={setNewPhone}
+        onAddPerson={addPerson}
+      />
       <h2>Numbers</h2>
-      {persons.map(({ name, phone }) => (
-        <p key={name}>{`${name} ${phone}`}</p>
-      ))}
+      <Persons persons={persons} query={query} />
     </div>
   );
 };
