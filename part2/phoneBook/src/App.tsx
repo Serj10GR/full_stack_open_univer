@@ -3,7 +3,7 @@ import { Person } from "./types/person";
 import { Filter } from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import { Persons } from "./components/Persons";
-import axios from "axios";
+import personService from "./services";
 
 const App = () => {
   const [persons, setPersons] = useState<Array<Person>>([]);
@@ -14,30 +14,49 @@ const App = () => {
   const addPerson = (event: FormEvent) => {
     event.preventDefault();
 
-    const newPerson: Person = {
+    const newPerson = {
       name: newName,
       number: newPhone,
-      id: persons.length + 1,
     };
 
-    const savedNames = persons.map((person) => person.name);
+    const alreadySavedPerson = persons.find((p) => p.name === newPerson.name);
 
-    const isPersonAlreadyPresent = savedNames.includes(newPerson.name);
-
-    if (isPersonAlreadyPresent) {
-      alert(`${newPerson.name} is already added to phonebook`);
+    if (alreadySavedPerson) {
+      if (
+        window.confirm(
+          `${alreadySavedPerson.name} is already added to phonebook, replace the old number with new one ?`
+        )
+      ) {
+        personService
+          .update({
+            ...alreadySavedPerson,
+            number: newPerson.number,
+          })
+          .then((updatedPerson) => {
+            setPersons([
+              ...persons.map((p) =>
+                p.id !== alreadySavedPerson.id ? p : updatedPerson
+              ),
+            ]);
+          })
+          .catch((error: Error) => {
+            window.alert(error.message);
+          });
+      }
+      setNewName("");
+      setNewPhone("");
       return;
     }
 
-    setPersons((prevPersons) => [...prevPersons, newPerson]);
+    personService.create(newPerson).then((newCreatedPerson) => {
+      setNewName("");
+      setNewPhone("");
+      setPersons((prevPersons) => [...prevPersons, newCreatedPerson]);
+    });
   };
 
   useEffect(() => {
-    axios
-      .get<Array<Person>>("http://localhost:3001/persons")
-      .then((response) => {
-        setPersons(response.data);
-      });
+    personService.getAll().then((res) => setPersons(res));
   }, []);
 
   return (
@@ -47,12 +66,14 @@ const App = () => {
 
       <h2>Add new person</h2>
       <PersonForm
+        nameValue={newName}
+        phoneValue={newPhone}
         onNameChange={setNewName}
         onPhoneChange={setNewPhone}
         onAddPerson={addPerson}
       />
       <h2>Numbers</h2>
-      <Persons persons={persons} query={query} />
+      <Persons persons={persons} query={query} setPersonsState={setPersons} />
     </div>
   );
 };
