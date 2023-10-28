@@ -10,8 +10,8 @@ export const Persons = ({ persons, query }: PersonsProps) => {
     person.name.toLowerCase().includes(query.toLowerCase())
   );
   return fileredPersonsByQuery.length > 0 ? (
-    fileredPersonsByQuery.map(({ name, phone }) => (
-      <p key={name}>{`${name} ${phone}`}</p>
+    fileredPersonsByQuery.map(({ name, number }) => (
+      <p key={name}>{`${name} ${number}`}</p>
     ))
   ) : (
     <p>No persons found for {query}</p>
