@@ -4,12 +4,23 @@ import { Filter } from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import { Persons } from "./components/Persons";
 import personService from "./services";
+import { Notification, NotificationMessage } from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState<Array<Person>>([]);
   const [query, setQuery] = useState("");
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
+  const [message, setMessage] = useState<Notification | null>(null);
+
+  const showMessage = (notification: Notification) => {
+    setMessage(notification);
+
+    // hide info after 5 sec
+    setTimeout(() => {
+      setMessage(null);
+    }, 5000);
+  };
 
   const addPerson = (event: FormEvent) => {
     event.preventDefault();
@@ -38,9 +49,16 @@ const App = () => {
                 p.id !== alreadySavedPerson.id ? p : updatedPerson
               ),
             ]);
+            showMessage({
+              message: `Updated ${updatedPerson.name}`,
+              type: "success",
+            });
           })
-          .catch((error: Error) => {
-            window.alert(error.message);
+          .catch(() => {
+            showMessage({
+              message: `Information of ${alreadySavedPerson.name} has already been removed from the server.`,
+              type: "error",
+            });
           });
       }
       setNewName("");
@@ -48,11 +66,23 @@ const App = () => {
       return;
     }
 
-    personService.create(newPerson).then((newCreatedPerson) => {
-      setNewName("");
-      setNewPhone("");
-      setPersons((prevPersons) => [...prevPersons, newCreatedPerson]);
-    });
+    personService
+      .create(newPerson)
+      .then((newCreatedPerson) => {
+        setNewName("");
+        setNewPhone("");
+        setPersons((prevPersons) => [...prevPersons, newCreatedPerson]);
+        showMessage({
+          message: `Added ${newCreatedPerson.name}`,
+          type: "success",
+        });
+      })
+      .catch((error: Error) => {
+        showMessage({
+          message: `Error: ${error.message}`,
+          type: "error",
+        });
+      });
   };
 
   useEffect(() => {
@@ -63,6 +93,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter onQueryChange={setQuery} />
+      <NotificationMessage {...message} />
 
       <h2>Add new person</h2>
       <PersonForm
