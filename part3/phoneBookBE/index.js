@@ -6,6 +6,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static("dist"));
 
 const customLogFormat = (tokens, request, response) => {
   const method = tokens.method(request, response);
