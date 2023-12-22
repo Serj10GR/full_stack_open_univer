@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Person } from "./types/person";
-const baseUrl = "/api/persons"; // "http://localhost:3001/api/persons";
+const baseUrl = "https://phone-book-4vfv.onrender.com/api/persons"; // "http://localhost:3001/api/persons";
 
 const getAll = () => {
   return axios.get<Array<Person>>(baseUrl).then((res) => res.data);
