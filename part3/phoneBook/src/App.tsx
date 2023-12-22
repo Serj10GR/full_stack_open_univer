@@ -8,6 +8,7 @@ import { Notification, NotificationMessage } from "./components/Notification";
 
 const App = () => {
   const [persons, setPersons] = useState<Array<Person>>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
@@ -86,7 +87,15 @@ const App = () => {
   };
 
   useEffect(() => {
-    personService.getAll().then((res) => setPersons(res));
+    personService
+      .getAll()
+      .then((res) => {
+        setPersons(res);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
   }, []);
 
   return (
@@ -104,7 +113,11 @@ const App = () => {
         onAddPerson={addPerson}
       />
       <h2>Numbers</h2>
-      <Persons persons={persons} query={query} setPersonsState={setPersons} />
+      {isLoading ? (
+        "...Loading"
+      ) : (
+        <Persons persons={persons} query={query} setPersonsState={setPersons} />
+      )}
     </div>
   );
 };

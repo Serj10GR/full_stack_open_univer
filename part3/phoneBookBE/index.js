@@ -68,26 +68,29 @@ app.delete("/api/persons/:id", (request, response) => {
 app.post("/api/persons/", (request, response) => {
   const body = request.body;
 
+  const name = body?.name;
+  const number = body?.number;
+
   // 3.6
-  if (!body?.name) {
+  if (!name) {
     return response.status(400).json({
       error: "person name missing",
     });
   }
 
-  if (!body?.number) {
+  if (!number) {
     return response.status(400).json({
       error: "person phone number missing",
     });
   }
 
   const newPerson = new Person({
-    content: body.content,
-    important: body.important || false,
+    name,
+    number,
   });
 
-  newPerson.save().then((savedNote) => {
-    response.json(savedNote);
+  newPerson.save().then((savedPerson) => {
+    response.json(savedPerson);
   });
 });
 
