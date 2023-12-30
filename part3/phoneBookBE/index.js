@@ -4,12 +4,14 @@ const morgan = require("morgan");
 const cors = require("cors");
 
 const Person = require("./models/person");
+const errorHandler = require("./middleware")
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 app.use(express.static("dist"));
+
 
 const customLogFormat = (tokens, request, response) => {
   const method = tokens.method(request, response);
@@ -25,7 +27,6 @@ const customLogFormat = (tokens, request, response) => {
 
 app.use(morgan(customLogFormat));
 
-let persons = [];
 
 app.get("/api/persons", (request, response) => {
   Person.find({}).then((people) => {
@@ -44,25 +45,40 @@ app.get("/info", (request, response) => {
 });
 
 // 3.3
-app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = persons.find((p) => p.id === id);
-
-  if (person) {
-    return response.json(person);
-  }
-
-  return response.status(404).end();
+app.get("/api/persons/:id", (request, response, next) => {
+  Person.findById(request.params.id)
+    .then(person => {
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 });
 
 // 3.4
-app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-
-  persons = persons.filter((p) => p.id !== id);
-
-  response.status(204).end();
+app.delete("/api/persons/:id", (request, response) => {  
+   Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 });
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  const person = {
+    number: body.number,
+  }
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
+})
 
 // 3.5
 app.post("/api/persons/", (request, response) => {
@@ -93,6 +109,9 @@ app.post("/api/persons/", (request, response) => {
     response.json(savedPerson);
   });
 });
+
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
