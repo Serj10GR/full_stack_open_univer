@@ -78,9 +78,10 @@ const App = () => {
           type: "success",
         });
       })
-      .catch((error: Error) => {
+      .catch((error) => {
+        console.log('eeeee', error)
         showMessage({
-          message: `Error: ${error.message}`,
+          message: `Error: ${error.response.data.error}`,
           type: "error",
         });
       });
