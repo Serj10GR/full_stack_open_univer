@@ -73,7 +73,7 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number,
   }
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true, context: 'query' })
     .then(updatedPerson => {
       response.json(updatedPerson)
     })
@@ -81,24 +81,12 @@ app.put('/api/persons/:id', (request, response, next) => {
 })
 
 // 3.5
-app.post("/api/persons/", (request, response) => {
+app.post("/api/persons/", (request, response, next) => {
   const body = request.body;
 
   const name = body?.name;
   const number = body?.number;
 
-  // 3.6
-  if (!name) {
-    return response.status(400).json({
-      error: "person name missing",
-    });
-  }
-
-  if (!number) {
-    return response.status(400).json({
-      error: "person phone number missing",
-    });
-  }
 
   const newPerson = new Person({
     name,
@@ -107,7 +95,7 @@ app.post("/api/persons/", (request, response) => {
 
   newPerson.save().then((savedPerson) => {
     response.json(savedPerson);
-  });
+  }).catch(err => next(err))
 });
 
 
